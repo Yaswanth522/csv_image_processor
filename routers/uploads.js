@@ -24,7 +24,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
   respondWith(res, 200, true, {
     message: "Request is being processed.",
     requestId: requestId, // Send back the request ID for status check
-    track_status: `http://localhost:3000/api/v1/status/${requestId}`,
+    track_status: `${process.env.DOMAIN}api/v1/status/${requestId}`,
   });
   // Process the CSV file
   await getCSV(req.file.path, requestId);
