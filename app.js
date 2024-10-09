@@ -5,11 +5,11 @@ const morgan = require("morgan");
 const uploadsRouter = require("./routers/uploads");
 const errorHandler = require("./utilities/errorHandler");
 const cloudinary = require("cloudinary").v2;
-require("dotenv/config")
+require("dotenv/config");
 
 const app = express();
 const api = process.env.API_URL;
-const port = "3000";
+const port = process.env.PORT || "3000";
 
 app.use(bodyParser.json());
 app.use(morgan("tiny"));
@@ -26,7 +26,7 @@ const domainAddress = "localhost:" + port;
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 // Mongodb connection trough mongoose
