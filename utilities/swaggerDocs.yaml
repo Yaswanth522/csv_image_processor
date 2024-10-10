@@ -6,7 +6,7 @@
 paths:
   /upload:
     post:
-      summary: Upload a CSV file
+      summary: Upload a CSV file to request image processing
       description: To submit a request for csv image processing by giving csv file as input
       requestBody:
         required: true
@@ -58,7 +58,7 @@ paths:
   
   /status/{requestId}:
     get:
-      summary: Check status
+      summary: Check status of image processing request
       description: To track the status of csv image processing request
       parameters:
         - name: requestId
