@@ -5,6 +5,7 @@ const cloudinary = require("cloudinary").v2;
 
 // DB models imports
 const UploadCSV = require("../models/uploads");
+const Product = require("../models/products");
 
 //utility imports
 const resizeImage = require("../utilities/getResizedImage");
@@ -58,10 +59,14 @@ const getUpdatedCSV = async (filePath, requestId) => {
         return;
       }
 
-      await UploadCSV.findOneAndUpdate(
-        { requestId: requestId },
-        { status: "Processing", products: processedResults }
-      );
+      const productRecord = processedResults.map((result) => {
+        return {
+          serial_number: result.serial_number,
+          product_name: result.product_name,
+          images: result.images.split(","),
+          resizedImages: result.resizedImages.split(","),
+        };
+      });
       // Write the processed results to a new CSV file
       const outputPath = `./files/${requestId}.csv`;
       const ws = fs.createWriteStream(outputPath);
@@ -88,8 +93,15 @@ const getUpdatedCSV = async (filePath, requestId) => {
               { status: "Completed", results: uploadResponse.secure_url },
               { new: true }
             );
+
+            const product = new Product({
+              requestId: requestId,
+              products: productRecord,
+              csv_file_url: uploadResponse.secure_url,
+            });
+            await product.save();
           } catch (error) {
-            console.error("Cloudinary upload error:", error);
+            console.error("Error:", error);
             await UploadCSV.findOneAndUpdate(
               { requestId: requestId },
               { status: "Error", results: "Error occured" }

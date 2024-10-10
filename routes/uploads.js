@@ -14,7 +14,7 @@ const getUpdatedCSV = require("../workers/getUpdatedCSV");
 const router = express.Router();
 const upload = multer({ dest: "uploads/" });
 
-// /api/v1/upload => Takes file as input -> gives json as response
+// /api/v1/upload => Takes csv file as input -> gives json as response with request Id
 router.post("/upload", upload.single("file"), async (req, res) => {
   if (!req.file) {
     return respondWith(res, 400, false, { message: "No file uploaded." });
@@ -22,8 +22,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
   const requestId = req.file.filename;
   const initialStatus = new UploadCSV({
     requestId: requestId,
-    status: "Processing",
-    products: [],
+    status: "Processing"
   });
   await initialStatus.save();
 
