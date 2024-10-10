@@ -20,6 +20,7 @@ async function resizeImage(url) {
 
     const resizedImageBuffer = await image
       .resize(newWidth, newHeight)
+      .jpeg()
       .toBuffer();
 
     return new Promise((resolve, reject) => {
@@ -31,7 +32,7 @@ async function resizeImage(url) {
         (error, result) => {
           if (error) {
             console.error("Cloudinary Upload Error:", error);
-            reject(error)
+            reject(error);
           } else {
             console.log("Uploaded to Cloudinary:", result.secure_url);
             resolve(result.secure_url); // Resolve the Promise with the image URL
