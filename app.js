@@ -62,7 +62,7 @@ cloudinary.config({
 // Mongodb connection trough mongoose
 mongoose
   .connect(process.env.MONGODB_CONNECTION_STRING, {
-    dbName: "image_size_reducer",
+    dbName: "csv_image_processor",
   })
   .then(() => {
     console.log("db connected!");

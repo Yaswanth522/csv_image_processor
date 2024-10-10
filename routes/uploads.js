@@ -25,8 +25,10 @@ router.post("/upload", upload.single("file"), async (req, res) => {
   const initialStatus = new UploadCSV({
     requestId: requestId,
     status: "Processing",
+    products: [],
   });
   await initialStatus.save();
+
   respondWith(res, 200, true, {
     message: "Request is being processed.",
     requestId: requestId, // Send back the request ID for status check
@@ -71,12 +73,20 @@ const getCSV = async (filePath, requestId) => {
     .on("end", async () => {
       // Clean up the uploaded file
       fs.unlinkSync(filePath);
-
       // Process the images
       let processedResults = [];
       try {
         processedResults = await Promise.all(
           results.map(async (result) => {
+            if (
+              !result.serial_number ||
+              !result.product_name ||
+              !result.images
+            ) {
+              throw new Error(
+                "Data not found, Please make sure csv file don't have partially empty records & Headers must be serial_number, product_name, images"
+              );
+            }
             const resizedImages = await Promise.all(
               result.images.split(",").map(async (image) => {
                 const resizedImage = await resizeImage(image);
@@ -102,6 +112,10 @@ const getCSV = async (filePath, requestId) => {
         return;
       }
 
+      await UploadCSV.findOneAndUpdate(
+        { requestId: requestId },
+        { status: "Processing", products: processedResults }
+      );
       // Write the processed results to a new CSV file
       const outputPath = `./files/${requestId}.csv`;
       const ws = fs.createWriteStream(outputPath);

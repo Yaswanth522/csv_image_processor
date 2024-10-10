@@ -9,6 +9,20 @@ const uploadsModel = new mongoose.Schema(
       required: true,
     },
     results: { type: String, default: null },
+    products: [
+      {
+        serial_number: {
+          type: Number,
+          required: true,
+        },
+        product_name: {
+          type: String,
+          required: true,
+        },
+        images: { type: String },
+        resizedImages: { type: String },
+      },
+    ],
   },
   { timestamps: true }
 );
