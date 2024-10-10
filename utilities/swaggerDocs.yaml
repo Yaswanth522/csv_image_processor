@@ -1,0 +1,128 @@
+openapi: 3.0.0
+info:
+  title: CSV Upload API
+  version: 1.0.0
+  description: API for uploading CSV files and checking their processing status
+paths:
+  /upload:
+    post:
+      summary: Upload a CSV file
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The CSV file to be uploaded
+      responses:
+        '200':
+          description: File successfully uploaded and is being processed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Request is being processed."
+                  requestId:
+                    type: string
+                    description: The unique ID for tracking the status
+                    example: abc123
+                  track_status:
+                    type: string
+                    format: uri
+                    description: The URL to check the status of the request
+                    example: "https://your-domain.com/api/v1/status/abc123"
+        '400':
+          description: No file uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "No file uploaded."
+  
+  /status/{requestId}:
+    get:
+      summary: Check the status of the CSV upload
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique request ID for the CSV processing
+      responses:
+        '200':
+          description: Successfully retrieved status
+          content:
+            application/json:
+              oneOf:
+                - description: Status Completed
+                  schema:
+                    type: object
+                    properties:
+                      success:
+                        type: boolean
+                        example: true
+                      status:
+                        type: string
+                        example: Completed
+                      file_url:
+                        type: string
+                        format: uri
+                        description: URL to the processed file
+                        example: "https://your-domain.com/files/output.csv"
+                - description: Status Processing
+                  schema:
+                    type: object
+                    properties:
+                      success:
+                        type: boolean
+                        example: true
+                      status:
+                        type: string
+                        example: Processing
+                      requestId:
+                        type: string
+                        example: abc123
+                - description: Error Occurred
+                  schema:
+                    type: object
+                    properties:
+                      success:
+                        type: boolean
+                        example: true
+                      status:
+                        type: string
+                        example: Error occured
+                      details:
+                        type: string
+                        description: Additional details about the error
+                        example: "File format not supported."
+        '404':
+          description: Request ID not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Request ID not found."

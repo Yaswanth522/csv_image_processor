@@ -47,7 +47,7 @@ router.get("/status/:requestId", async (req, res) => {
       requestId: requestId,
     });
   } else {
-    return respondWith(res, 400, false, {
+    return respondWith(res, 200, true, {
       status: "Error occured",
       details: uploadStatus.results,
     });
