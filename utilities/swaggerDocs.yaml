@@ -1,12 +1,13 @@
-openapi: 3.0.0
-info:
-  title: CSV Upload API
-  version: 1.0.0
-  description: API for uploading CSV files and checking their processing status
+# openapi: 3.0.0
+# info:
+#   title: CSV Upload API
+#   version: 1.0.0
+#   description: API for uploading CSV files and checking their processing status
 paths:
   /upload:
     post:
       summary: Upload a CSV file
+      description: To submit a request for csv image processing by giving csv file as input
       requestBody:
         required: true
         content:
@@ -57,7 +58,8 @@ paths:
   
   /status/{requestId}:
     get:
-      summary: Check the status of the CSV upload
+      summary: Check status
+      description: To track the status of csv image processing request
       parameters:
         - name: requestId
           in: path

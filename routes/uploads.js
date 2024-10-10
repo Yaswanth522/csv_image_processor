@@ -1,16 +1,22 @@
+// npm imports
 const express = require("express");
 const multer = require("multer");
 const fs = require("fs");
 const csv = require("csv-parser");
 const fastcsv = require("fast-csv");
-const resizeImage = require("../utilities/getResizedImage");
-const UploadCSV = require("../models/uploads");
 const cloudinary = require("cloudinary").v2;
+
+// DB models imports
+const UploadCSV = require("../models/uploads");
+
+// utility imports
+const resizeImage = require("../utilities/getResizedImage");
 const respondWith = require("../utilities/responseHandler");
 
 const router = express.Router();
 const upload = multer({ dest: "uploads/" });
 
+// /api/v1/upload => Takes file as input -> gives json as response
 router.post("/upload", upload.single("file"), async (req, res) => {
   if (!req.file) {
     return respondWith(res, 400, false, { message: "No file uploaded." });
@@ -30,6 +36,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
   await getCSV(req.file.path, requestId);
 });
 
+// /api/v1/status => gives json response with status of request
 router.get("/status/:requestId", async (req, res) => {
   const requestId = req.params.requestId;
   const uploadStatus = await UploadCSV.findOne({ requestId: requestId });
@@ -54,6 +61,7 @@ router.get("/status/:requestId", async (req, res) => {
   }
 });
 
+// To process the csv file, resize images and generate a link to upated csv file
 const getCSV = async (filePath, requestId) => {
   let results = [];
   // Read and parse the CSV file
