@@ -6,7 +6,7 @@ The system allows you to submit a CSV file containing image links for processing
 
 ## How to use
 Read API docs at: https://csv-image-processor.onrender.com/api-docs/
-Note: If not working, reload or request again as it is hosted as a free service it will get suspended if not used for a while.
+**Note**: If not working, reload or request again as it is hosted as a free service it will get suspended if not used for a while.
 
 ## Technologies Used
 
@@ -51,7 +51,7 @@ Follow these steps to set up the project locally.
     ```bash
     npm start
 
-##API Documentation
+## API Documentation
 You can access the Swagger API docs UI by navigating to http://localhost:3000/api-docs in your browser once the server is running.
 
 
