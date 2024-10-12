@@ -5,6 +5,10 @@ const cloudinary = require("cloudinary").v2;
 async function resizeImage(url) {
   try {
     // Fetch image from URL
+    url = url.trim()
+    if(url === "") {
+      return "NA"
+    }
     const response = await axios({
       url,
       responseType: "arraybuffer",

@@ -34,7 +34,7 @@ const getUpdatedCSV = async (filePath, requestId) => {
                 "Data not found, Please make sure csv file don't have partially empty records & Headers must be serial_number, product_name, images"
               );
             }
-            const resizedImages = await Promise.all(
+            let resizedImages = await Promise.all(
               result.images.split(",").map(async (image) => {
                 const resizedImage = await resizeImage(image);
                 if (
@@ -42,11 +42,12 @@ const getUpdatedCSV = async (filePath, requestId) => {
                   resizedImage.success !== undefined &&
                   !resizedImage.success
                 ) {
-                  throw new Error("Image not found for " + result.product_name);
+                  throw new Error("Image URL not found for " + result.product_name);
                 }
                 return resizedImage;
               })
             );
+            resizedImages = resizedImages.filter(image => image !== 'NA')
             return { ...result, resizedImages: resizedImages.join(",") };
           })
         );
