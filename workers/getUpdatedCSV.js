@@ -4,7 +4,7 @@ const fastcsv = require("fast-csv");
 const cloudinary = require("cloudinary").v2;
 
 // DB models imports
-const UploadCSV = require("../models/uploads");
+const Request = require("../models/requests");
 const Product = require("../models/products");
 
 //utility imports
@@ -52,7 +52,7 @@ const getUpdatedCSV = async (filePath, requestId) => {
         );
       } catch (error) {
         console.error("Cloudinary upload error:", error);
-        await UploadCSV.findOneAndUpdate(
+        await Request.findOneAndUpdate(
           { requestId: requestId },
           { status: "Error", results: error }
         );
@@ -88,7 +88,7 @@ const getUpdatedCSV = async (filePath, requestId) => {
             fs.unlinkSync(outputPath);
 
             // Update processing status
-            await UploadCSV.findOneAndUpdate(
+            await Request.findOneAndUpdate(
               { requestId: requestId },
               { status: "Completed", results: uploadResponse.secure_url },
               { new: true }
@@ -102,7 +102,7 @@ const getUpdatedCSV = async (filePath, requestId) => {
             await product.save();
           } catch (error) {
             console.error("Error:", error);
-            await UploadCSV.findOneAndUpdate(
+            await Request.findOneAndUpdate(
               { requestId: requestId },
               { status: "Error", results: "Error occured" }
             );
@@ -110,7 +110,7 @@ const getUpdatedCSV = async (filePath, requestId) => {
         });
     })
     .on("error", async (error) => {
-      await UploadCSV.findOneAndUpdate(
+      await Request.findOneAndUpdate(
         { requestId: requestId },
         { status: "Error", results: "Error occured" }
       );

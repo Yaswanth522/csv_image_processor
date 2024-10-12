@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const uploadsModel = new mongoose.Schema(
+const requestsModel = new mongoose.Schema(
   {
     requestId: { type: String, required: true, unique: true },
     status: {
@@ -13,6 +13,6 @@ const uploadsModel = new mongoose.Schema(
   { timestamps: true }
 );
 
-const UploadCSV = mongoose.model("Uploads", uploadsModel);
+const Request = mongoose.model("Requests", requestsModel);
 
-module.exports = UploadCSV;
+module.exports = Request;

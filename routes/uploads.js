@@ -3,7 +3,7 @@ const express = require("express");
 const multer = require("multer");
 
 // DB models imports
-const UploadCSV = require("../models/uploads");
+const Request = require("../models/requests");
 
 // utility imports
 const respondWith = require("../utilities/responseHandler");
@@ -20,7 +20,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     return respondWith(res, 400, false, { message: "No file uploaded." });
   }
   const requestId = req.file.filename;
-  const initialStatus = new UploadCSV({
+  const initialStatus = new Request({
     requestId: requestId,
     status: "Processing"
   });
@@ -38,7 +38,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 // /api/v1/status => gives json response with status of request
 router.get("/status/:requestId", async (req, res) => {
   const requestId = req.params.requestId;
-  const uploadStatus = await UploadCSV.findOne({ requestId: requestId });
+  const uploadStatus = await Request.findOne({ requestId: requestId });
   if (!uploadStatus) {
     return res.status(404).send("Request ID not found.");
   }
